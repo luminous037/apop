@@ -30,6 +30,10 @@ class Question(models.Model):
         auto_now=True,
         help_text="질문 수정 시간"
     )
+    answers = models.ManyToManyField(
+        to="Answer",
+        through="QuestionAnswer",
+    )
 
     class Meta:
         db_table = "question"
