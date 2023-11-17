@@ -48,7 +48,7 @@ class SurveyQuestionTest(TestCase):
         self.assertEquals(survey_question.order, 2)
 
     def testChangeOrder(self):
-        survey_question = SurveyQuestion.objects.create(
+        SurveyQuestion.objects.create(
             survey=Survey.objects.get(title="survey1"),
             question=Question.objects.get(title="question1"),
         )
@@ -57,4 +57,21 @@ class SurveyQuestionTest(TestCase):
             question=Question.objects.get(title="question2"),
             order=1
         )
+        survey_question = SurveyQuestion.objects.get(
+            survey=Survey.objects.get(title="survey1"),
+            question=Question.objects.get(title="question1"),
+        )
+
         self.assertEquals(survey_question.order, 2)
+
+    def testChangeOrder2(self):
+        survey_question = SurveyQuestion.objects.create(
+            survey=Survey.objects.get(title="survey1"),
+            question=Question.objects.get(title="question1"),
+        )
+        survey_question2 = SurveyQuestion.objects.create(
+            survey=Survey.objects.get(title="survey1"),
+            question=Question.objects.get(title="question2"),
+        )
+        survey_question.swap_order(2)
+        self.assertEquals(survey_question2.order, 1)

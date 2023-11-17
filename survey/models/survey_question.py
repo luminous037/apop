@@ -32,16 +32,29 @@ class SurveyQuestion(models.Model):
     def next_order(self) -> int:
         return SurveyQuestion.objects.filter(survey=self.survey).count() + 1
 
-    def exist(self, order: int) -> bool:
-        return SurveyQuestion.objects.filter(survey=self.survey, order=order).exists()
+    def exist_order(self) -> bool:
+        return SurveyQuestion.objects.filter(survey=self.survey, order=self.order).exists()
 
-    def swap_order(self, survey_question: "SurveyQuestion"):
-        self.order, survey_question.order = survey_question.order, self.order
-        self.save()
+    def swap_order(self, order: int):
+        if order == self.order:
+            return
+        survey_question = SurveyQuestion.objects.get(
+            survey=self.survey,
+            order=order
+        )
+        survey_question.order, self.order = self.order, survey_question.order
         survey_question.save()
+        self.save()
 
     def save(self, *args, **kwargs):
         if self.order is None:
             self.order = self.next_order
+        if self.exist_order():
+            SurveyQuestion.objects.filter(
+                survey=self.survey,
+                order=self.order
+            ).update(
+                order=self.next_order
+            )
 
         super().save(*args, **kwargs)
