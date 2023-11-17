@@ -1,5 +1,5 @@
 from django.test import TestCase
-from survey.models import Survey, SurveyQuestion, Question
+from survey.models import Survey, SurveyQuestion, Question, Answer, QuestionAnswer
 
 
 # Create your tests here.
@@ -83,3 +83,32 @@ class SurveyQuestionTest(TestCase):
         )
 
         self.assertEquals(survey_question2.order, 1)
+
+class QuestionAnswerCase(TestCase):
+    def setUp(self):
+        Question.objects.create(title="question1", description="question1 description")
+        Question.objects.create(title="question2", description="question2 description")
+        Question.objects.create(title="question3", description="question3 description")
+        Answer.objects.create(description="answer1 description")
+        Answer.objects.create(description="answer2 description")
+        Answer.objects.create(description="answer3 description")
+
+    def testUpdate(self):
+        # 테스트 데이터가 잘 수정되었는지 확인
+        QuestionAnswer.objects.create(
+            question=Question.objects.get(title="question1"),
+            answer=Answer.objects.get(description="answer1 description"),
+        )
+        QuestionAnswer.objects.create(
+            question=Question.objects.get(title="question1"),
+            answer=Answer.objects.get(description="answer2 description"),
+        )
+        QuestionAnswer.objects.get(
+            question=Question.objects.get(title="question1"),
+            answer=Answer.objects.get(description="answer1 description"),
+        ).swap_order(2)
+        question_answer = QuestionAnswer.objects.get(
+            question=Question.objects.get(title="question1"),
+            answer=Answer.objects.get(description="answer2 description"),
+        )
+        self.assertEqual(question_answer.order, 1)
