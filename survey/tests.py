@@ -1,5 +1,6 @@
 from django.test import TestCase
 from survey.models import Survey, SurveyQuestion, Question, Answer, QuestionAnswer
+from survey.models.question import TYPE_FILED
 
 
 # Create your tests here.
@@ -25,8 +26,8 @@ class SurveyTestCase(TestCase):
 class SurveyQuestionTest(TestCase):
     def setUp(self):
         Survey.objects.create(title="survey1", description="survey1 description")
-        Question.objects.create(title="question1", description="question1 description")
-        Question.objects.create(title="question2", description="question2 description")
+        Question.objects.create(title="question1", description="question1 description", type_filed=TYPE_FILED.radio)
+        Question.objects.create(title="question2", description="question2 description", type_filed=TYPE_FILED.radio)
 
     def testCreation(self):
         # order를 안줬을 때 테스트 데이터가 잘 생성되었는지 확인
@@ -86,9 +87,9 @@ class SurveyQuestionTest(TestCase):
 
 class QuestionAnswerCase(TestCase):
     def setUp(self):
-        Question.objects.create(title="question1", description="question1 description")
-        Question.objects.create(title="question2", description="question2 description")
-        Question.objects.create(title="question3", description="question3 description")
+        Question.objects.create(title="question1", description="question1 description", type_filed=TYPE_FILED.radio)
+        Question.objects.create(title="question2", description="question2 description", type_filed=TYPE_FILED.radio)
+        Question.objects.create(title="question3", description="question3 description", type_filed=TYPE_FILED.radio)
         Answer.objects.create(description="answer1 description")
         Answer.objects.create(description="answer2 description")
         Answer.objects.create(description="answer3 description")
