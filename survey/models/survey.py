@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class Survey(models.Model):
@@ -33,6 +34,10 @@ class Survey(models.Model):
     questions = models.ManyToManyField(
         to="Question",
         through="SurveyQuestion",
+    )
+    users = models.ManyToManyField(
+        to=settings.AUTH_USER_MODEL,
+        through="UserSurvey",
     )
 
     def __str__(self):
