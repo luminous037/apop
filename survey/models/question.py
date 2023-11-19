@@ -47,6 +47,7 @@ class Question(models.Model):
     answers = models.ManyToManyField(
         to="Answer",
         through="QuestionAnswer",
+        related_name="questions",
     )
     type_filed = models.PositiveSmallIntegerField(
         db_column="type_filed",
@@ -60,3 +61,6 @@ class Question(models.Model):
         verbose_name = "질문"
         verbose_name_plural = "질문"
         ordering = ["create_at"]
+
+    def __str__(self):
+        return self.title

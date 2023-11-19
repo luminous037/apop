@@ -28,3 +28,6 @@ class Answer(models.Model):
         verbose_name = '답변'
         verbose_name_plural = '답변'
         ordering = ['create_at']
+
+    def __str__(self):
+        return self.description

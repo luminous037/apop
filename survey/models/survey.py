@@ -34,10 +34,12 @@ class Survey(models.Model):
     questions = models.ManyToManyField(
         to="Question",
         through="SurveyQuestion",
+        related_name="surveys",
     )
     users = models.ManyToManyField(
         to=settings.AUTH_USER_MODEL,
         through="UserSurvey",
+        related_name="surveys",
     )
 
     def __str__(self):
