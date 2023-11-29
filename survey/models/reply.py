@@ -2,8 +2,8 @@ from django.db import models
 
 
 class Reply(models.Model):
-    user_survey = models.ForeignKey("UserSurvey", on_delete=models.CASCADE)
-    question = models.ForeignKey("Question", on_delete=models.CASCADE)
+    user_survey = models.ForeignKey("UserSurvey", on_delete=models.CASCADE, related_name="replies")
+    survey_question = models.ForeignKey("SurveyQuestion", on_delete=models.CASCADE, related_name="replies")
     content = models.TextField(
         db_column="content",
         db_comment="reply to question",
@@ -18,5 +18,10 @@ class Reply(models.Model):
         verbose_name_plural = "답변"
         ordering = ["user_survey", "question"]
 
-    def to_answer_list(self) -> list[str]:
-        return [self.question.title, self.content]
+    @property
+    def title(self) -> str:
+        return self.survey_question.question.title
+
+    @property
+    def order(self) -> int:
+        return self.survey_question.order

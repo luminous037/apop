@@ -39,3 +39,6 @@ class UserSurvey(models.Model):
         verbose_name = '유저 설문'
         verbose_name_plural = '유저 설문'
         ordering = ['create_at']
+
+    def replies(self) -> models.QuerySet:
+        return self.replies().all()

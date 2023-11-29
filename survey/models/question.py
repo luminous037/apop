@@ -52,8 +52,10 @@ class Question(models.Model):
     type_filed = models.PositiveSmallIntegerField(
         db_column="type_filed",
         db_comment="question type",
+        null=False,
         choices=TYPE_FILED,
-        help_text="질문 타입"
+        help_text="질문 타입",
+        default=2
     )
 
     class Meta:
