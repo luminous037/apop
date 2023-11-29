@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     # third-parth app
     'django_extensions',
     # custom app
-    'survey'
+    'survey',
+    'huami',
 ]
 
 MIDDLEWARE = [
