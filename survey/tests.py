@@ -89,8 +89,8 @@ class SurveyQuestionTest(TestCase):
 class QuestionAnswerCase(TestCase):
     def setUp(self):
         Question.objects.create(title="question1", description="question1 description", type_filed=TYPE_FILED.radio)
-        Question.objects.create(title="question2", description="question2 description", type_filed=TYPE_FILED.radio)
-        Question.objects.create(title="question3", description="question3 description", type_filed=TYPE_FILED.radio)
+        Question.objects.create(title="question2", description="question2 description", type_filed=TYPE_FILED.text)
+        Question.objects.create(title="question3", description="question3 description", type_filed=TYPE_FILED.text_area)
         Answer.objects.create(description="answer1 description")
         Answer.objects.create(description="answer2 description")
         Answer.objects.create(description="answer3 description")
