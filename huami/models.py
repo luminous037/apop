@@ -19,6 +19,7 @@ class HuamiAccount(models.Model):
         db_comment="huami account email address",
         null=False,
         blank=False,
+        unique=True,
         help_text="화웨이 계정 이메일"
     )
     password = models.CharField(
