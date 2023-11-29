@@ -12,12 +12,6 @@ class Reply(models.Model):
         help_text="답변",
     )
 
-    class Meta:
-        db_table = "reply"
-        verbose_name = "답변"
-        verbose_name_plural = "답변"
-        ordering = ["user_survey", "question"]
-
     @property
     def title(self) -> str:
         return self.survey_question.question.title
@@ -25,3 +19,11 @@ class Reply(models.Model):
     @property
     def order(self) -> int:
         return self.survey_question.order
+
+    class Meta:
+        db_table = "reply"
+        verbose_name = "답변"
+        verbose_name_plural = "답변"
+        ordering = ["user_survey"]
+
+
