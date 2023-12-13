@@ -75,7 +75,55 @@ class HuamiAmazfit:
     def _set_access_token(self, redirect_url_parameters: dict) -> None:
         self.access_token = redirect_url_parameters["access"][0]
 
-    def access(self):
+    # @DeprecationWarning
+    def profile(self):
+        response = requests.get(
+            url=_assemble_url(name='profile',
+                              user_id=parse.quote(self.user_id)),
+            headers={'apptoken': self.app_token,}
+        )
+        response.raise_for_status()
+        return response
+
+    def band_data(self, from_date: str, to_date: str):
+        response = requests.get(
+            url=_assemble_url(name='band_data'),
+            params=_assemble_payload(name='band_data',
+                                     userid=self.user_id,
+                                     from_date=from_date,
+                                     to_date=to_date),
+            headers={'apptoken':self.app_token}
+        )
+        response.raise_for_status()
+        return response
+
+    def stress(self, from_date: str, to_date: str):
+        params = _assemble_payload(name='stress')
+        params['from']=from_date
+        params['to']=to_date
+        response = requests.get(
+            url=_assemble_url(name='stress',
+                              user_id=self.user_id),
+            params=params,
+            headers={'apptoken':self.app_token}
+        )
+        response.raise_for_status()
+        return response
+
+    def blood_oxygen(self, from_date: str, to_date:str):
+        params = _assemble_payload(name='blood_oxygen')
+        params['from']=from_date
+        params['to']=to_date
+        response = requests.get(
+            url=_assemble_url(name='blood_oxygen',
+                              user_id=self.user_id),
+            params=params,
+            headers={'apptoken':self.app_token}
+        )
+        response.raise_for_status()
+        return response
+
+    def access(self) -> None:
         response = requests.post(
             url=_assemble_url(name='tokens_amazfit', user_email=parse.quote(self.email)),
             data=_assemble_payload(name='tokens_amazfit', password=self.password),
@@ -92,7 +140,7 @@ class HuamiAmazfit:
         self._set_country_code(redirect_url_parameters)
         self._set_access_token(redirect_url_parameters)
 
-    def login(self):
+    def login(self) -> None:
         response = requests.post(
             url=_assemble_url(name='login_amazfit'),
             data=_assemble_payload(name='login_amazfit',

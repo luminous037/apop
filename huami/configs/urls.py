@@ -26,5 +26,5 @@ URLS = {
     'band_data': 'https://api-mifit.huami.com/v1/data/band_data.json',
     'stress': 'https://api-mifit.huami.com/users/{user_id}/events',
     'blood_oxygen': 'https://api-mifit-sg2.zepp.com/users/{user_id}/events/dateString',
-    'profile': 'https://api-open.huami.com/users/{user_id}/profile',
+    'profile': 'https://api-mifit-sg2.zepp.com/users/{user_id}',
 }

@@ -39,14 +39,14 @@ PAYLOADS: dict = {
     },
     'stress': {
         'limit': 9999,
-        'from': None, #Timestamp
+        'from': None,  # Timestamp
         'to': None,
         'eventType': 'all_day_stress',
         'reverse': True,
     },
     'blood_oxygen': {
         'limit': 1000,
-        'from': None, #yyyy-mm-ddThh:mm:ss (T는 문자 그대로)
+        'from': None,  # yyyy-mm-ddThh:mm:ss (T는 문자 그대로)
         'to': None,
         'eventType': 'blood_oxygen',
         'subType': 'click',
