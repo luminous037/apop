@@ -22,4 +22,9 @@ URLS = {
     'tokens_amazfit': 'https://api-user.huami.com/registrations/{user_email}/tokens',
     'login_amazfit': 'https://account.huami.com/v2/client/login',
     'logout': 'https://account-us2.huami.com/v1/client/logout',
+    'devices': 'https://api-mifit-us2.huami.com/users/{user_id}/devices',
+    'band_data': 'https://api-mifit.huami.com/v1/data/band_data.json',
+    'stress': 'https://api-mifit.huami.com/users/{user_id}/events',
+    'blood_oxygen': 'https://api-mifit-sg2.zepp.com/users/{user_id}/events/dateString',
+    'profile': 'https://api-open.huami.com/users/{user_id}/profile',
 }
