@@ -1,7 +1,9 @@
+from datetime import datetime
+
 from django.db import models
 from django.conf import settings
 
-default_sny_date = "1970-01-01"
+default_sny_date = datetime(1970, 1, 1)
 
 class HuamiAccount(models.Model):
     user = models.OneToOneField(
