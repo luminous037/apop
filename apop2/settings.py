@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # third-parth app
     'django_extensions',
+    'django_bootstrap5',
     # custom app
     'survey',
     'huami',
