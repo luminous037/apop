@@ -4,12 +4,13 @@ from django.db import models
 class Reply(models.Model):
     user_survey = models.ForeignKey("UserSurvey", on_delete=models.CASCADE, related_name="replies")
     survey_question = models.ForeignKey("SurveyQuestion", on_delete=models.CASCADE, related_name="replies")
-    content = models.TextField(
+    content = models.CharField(
         db_column="content",
         db_comment="reply to question",
         null=False,
         blank=True,
         help_text="답변",
+        max_length=255,
     )
 
     @property
@@ -26,4 +27,4 @@ class Reply(models.Model):
         verbose_name_plural = "답변"
         ordering = ["user_survey"]
 
-
+    
