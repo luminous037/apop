@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="p-5 mb-4 bg-body-tertiary rounded-3">
+        <h1 class="text-center display-5 fw-bold">설문조사</h1>
+        <p class="text-center fs-4">설문조사를 통해 연구를 도와주세요!</p>
+    </div>
+    {% for survey in object_list %}
+    <div class="card mb-5">
+        <div class="row g-0">
+            <div class="col-md-2">
+                <img src="" class="img-fluid rounded-start" alt="..."/>
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">{{ survey.title }}</h5>
+                    <p class="card-text">{{ survey.description }}</p>
+                    <p class="card-text"><small class="text-body-secondary">마지막 수정날짜 - {{ survey.updated_at }}</small></p>
+                </div>
+            </div>
+            <div class="col-md-2 align-self-center">
+                <div class="d-grid gap-2 mx-auto">
+                    <a class="btn btn-primary" href="{% url 'survey:survey-detail' survey.pk %}" role="button">작성하기</a>
+                    <a class="btn btn-secondary" href="#" role="button">목록보기</a>
+                    <a class="btn btn-danger" href="#" role="button">수정하기</a>
+                  </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}

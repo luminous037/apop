@@ -1,0 +1,44 @@
+<figure>
+    <blockquote class="blockquote">
+    <p>{{ question.title }}</p>
+    </blockquote>
+    <figcaption class="blockquote-footer">
+        {{ question.description }}
+    </figcaption>
+</figure>
+{% if question.type_filed == 0 %}
+    <div class="mb-3">
+        <input type="text" class="form-control" id="{{ question.pk }}" placeholder="텍스트를 입력하세요." required>
+        <label for="{{ question.pk }}" class="form-label"></label>
+    </div>
+{% elif question.type_filed == 1 %}
+    <div class="mb-3">
+        <input type="number" class="form-control" id="{{ question.pk }}" placeholder="숫자를 입력하세요." required>
+        <label for="{{ question.pk }}" class="form-label"></label>
+    </div>
+{% elif question.type_filed == 2 %}
+    {% for answer in question.answers.all %}
+        <div class="form-check form-check-inline mb-3">
+            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="{{ question.pk }}" value="{{ answer.description }}" required>
+            <label class="form-check-label" for="{{ question.pk }}">{{ answer.description }}</label>
+        </div>
+    {% endfor %}
+{% elif question.type_filed == 3 %}
+    <select class="form-select" aria-label="{{ question.pk }}" required>
+        {% for answer in question.answers.all %}
+            <option value="{{ answer.description }}">{{ answer.description }}</option>
+        {% endfor %}
+    </select>
+{% elif question.type_filed == 4 %}
+    {% for answer in question.answers.all %}
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="{{ question.pk }}" value="{{ answer.description }}" required>
+            <label class="form-check-label" for="{{ question.pk }}">{{ answer.description }}</label>
+        </div>
+    {% endfor %}
+{% elif question.type_filed == 5 %}
+    <div class="mb-3">
+        <textarea class="form-control" id="{{ question.pk }}" rows="3" placeholder="텍스트를 입력하세요" required></textarea>
+        <label for="{{ question.pk }}" class="form-label"></label>
+    </div>
+{% endif %}
