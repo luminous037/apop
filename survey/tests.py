@@ -85,6 +85,22 @@ class SurveyQuestionTest(TestCase):
         )
 
         self.assertEquals(survey_question2.order, 1)
+        
+    def testManyRelated(self):
+        SurveyQuestion.objects.create(
+            survey=Survey.objects.get(title="survey1"),
+            question=Question.objects.get(title="question1"),
+        )
+        SurveyQuestion.objects.create(
+            survey=Survey.objects.get(title="survey1"),
+            question=Question.objects.get(title="question2"),
+        )
+        
+        survey1 = Survey.objects.get(
+            title="survey1"
+        )
+        
+        self.assertTrue(survey1.questions.all().count() == 2)
 
 class QuestionAnswerCase(TestCase):
     def setUp(self):
