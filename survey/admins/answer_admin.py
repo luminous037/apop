@@ -4,6 +4,8 @@ from survey.models import Answer
 
 
 class AnswerAdmin(admin.ModelAdmin):
+    """Answer 모델 어드민
+    """    
     fields = ['description']
     list_display = ['description']
     list_display_links = ['description']
