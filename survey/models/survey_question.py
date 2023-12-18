@@ -21,6 +21,9 @@ class SurveyQuestion(models.Model):
         help_text="질문 순서",
         validators=[MinValueValidator(1)],
     )
+    
+    def __str__(self):
+        return self.question.title
 
     class Meta:
         db_table = "survey_question"
