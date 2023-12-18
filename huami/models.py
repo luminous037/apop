@@ -6,6 +6,8 @@ from django.conf import settings
 default_sny_date = datetime(1970, 1, 1)
 
 class HuamiAccount(models.Model):
+    """HuamiAccount 모델 클래스
+    """    
     user = models.OneToOneField(
         to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -41,7 +43,12 @@ class HuamiAccount(models.Model):
         default=default_sny_date,
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """HuamiAccount 인스턴스 출력 메서드
+
+        Returns:
+            str: Huami 계정 이메일
+        """        
         return self.email
 
     class Meta:
@@ -51,6 +58,8 @@ class HuamiAccount(models.Model):
         ordering = ["email", "sync_date"]
 
     def reset_sync_date(self):
+        """동기화 시간 초기화
+        """        
         self.sync_date = default_sny_date
         self.save()
 
