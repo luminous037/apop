@@ -24,15 +24,27 @@ class SurveyDetailView(DetailView):
     
 
 class UserSurveyListView(ListView):
+    """설문 작성 결과를 제공하는 클래스 기반 뷰
+    """    
     template_name='survey/user_survey_list.html'
     
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        """survey 정보를 추가한 context_data 반환
+
+        Returns:
+            dict[str, Any]: context_data를 반환
+        """        
         context = super().get_context_data(**kwargs)
         context['survey'] = Survey.objects.get(**kwargs)
         return context
     
-    def get_queryset(self) -> QuerySet[Any]:
+    def get_queryset(self) -> QuerySet[UserSurvey]:
+        """UserSurvey에 대한 object_list를 반환
+        현재 로그인 된 User가 선택한 Survey에 대한 UserSurvey들을 반환
+        Returns:
+            QuerySet[UserSurvey]: UserSurvey들에 대한 쿼리셋
+        """        
         survey = Survey.objects.get(**self.kwargs)
         queryset = UserSurvey.objects.filter(user=self.request.user, 
                                              survey=survey).order_by('create_at')
