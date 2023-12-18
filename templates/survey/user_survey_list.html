@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-4">
+    {{ survey.title }}
+    <div class="accordion" id="accordionUserSurvey">
+        {% for user_survey in object_list %}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#{{ user_survey.pk }}" aria-expanded="true" aria-controls="{{ user_survey.pk }}">
+                    {{ user_survey.create_at }}
+                </button>
+            </h2>
+            <div id="{{ user_survey.pk }}" class="accordion-collapse collapse show"
+                data-bs-parent="#accordionUserSurvey">
+                <div class="accordion-body">
+                    {% for reply in user_survey.replies.all %}
+                        <p>
+                            <mark>{{ reply.title }}</mark>
+                            <br>
+                            <small>{{ reply.content }}</small>
+                        </p> 
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}
