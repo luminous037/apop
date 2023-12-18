@@ -32,7 +32,7 @@ class SurveyFormView(ProcessFormView):
             user_survey (UserSurvey): 유저가 실시한 설문조사(새로 만들어진)
             post_data (QueryDict): 폼으로 입력받은 데이터
         """        
-        for key, value in post_data.items():
+        for key in post_data.keys():
             if not key.isdigit(): # for excepting csrf_token
                 continue
             
@@ -41,7 +41,7 @@ class SurveyFormView(ProcessFormView):
                                                          question=question)
             Reply.objects.create(user_survey=user_survey,
                                  survey_question=survey_question,
-                                 content=value)
+                                 content=','.join(post_data.getlist(key)))
 
     def get(self, request, *args, **kwargs):
         """폼 입력 화면
