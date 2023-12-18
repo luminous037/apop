@@ -24,8 +24,8 @@ class SurveyFormView(ProcessFormView):
     
     def post(self, request, *args, **kwargs):
         survey = Survey.objects.get(**kwargs)
-        user_survey = UserSurvey.objects.get_or_create(user=request.user,
-                                                       survey=survey)
+        user_survey = UserSurvey.objects.create(user=request.user,
+                                                survey=survey)
         
         if user_survey[1] == False:
             """
