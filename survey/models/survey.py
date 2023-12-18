@@ -3,6 +3,9 @@ from django.conf import settings
 
 
 class Survey(models.Model):
+    """Survey 모델 클래스
+    설문에 대한 정보
+    """    
     title = models.CharField(
         db_column="title",
         db_comment="survey title",
@@ -42,7 +45,12 @@ class Survey(models.Model):
         related_name="surveys",
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Survey 인스턴스 출력 메서드
+
+        Returns:
+            str: Survey 제목
+        """        
         return self.title
 
     class Meta:

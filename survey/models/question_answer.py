@@ -2,6 +2,8 @@ from django.db import models
 
 
 class QuestionAnswer(models.Model):
+    """Question과 Answer의 N:M관계 지원을 위한 모델 클래스
+    """    
     question = models.ForeignKey(
         to="Question",
         db_comment="question",
@@ -28,12 +30,27 @@ class QuestionAnswer(models.Model):
 
     @property
     def next_order(self) -> int:
+        """가질 수 있는 다음 순서를 반환
+
+        Returns:
+            int: 기본적으로 마지막 순서 번호 + 1
+        """        
         return QuestionAnswer.objects.filter(question=self.question).count() + 1
 
     def exist_order(self) -> bool:
+        """현재 QuestionAnswer의 순서 번호가 이미 존재하는지 확인
+
+        Returns:
+            bool: 존재하면 True, 존재하지 않으면 False
+        """        
         return QuestionAnswer.objects.filter(question=self.question, order=self.order).exists()
 
     def swap_order(self, order: int):
+        """두 QuestionAnswer의 순서 번호를 교환
+
+        Args:
+            order (int): 교환하고 싶은 번호
+        """        
         if order == self.order:
             return
         question_answer = QuestionAnswer.objects.get(
@@ -45,6 +62,8 @@ class QuestionAnswer(models.Model):
         self.save()
 
     def save(self, *args, **kwargs):
+        """순서 번호 자동 설정을 위한 메서드
+        """        
         if self.order is None:
             self.order = self.next_order
         if self.exist_order():

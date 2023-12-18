@@ -2,6 +2,9 @@ from django.db import models
 
 
 class Answer(models.Model):
+    """Answer 모델 클래스
+    Question에 대한 가능한 답변
+    """    
     description = models.CharField(
         db_column='description',
         db_comment='description of answer',
@@ -29,5 +32,10 @@ class Answer(models.Model):
         verbose_name_plural = '답변'
         ordering = ['create_at']
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Answer 인스턴스 출력 메서드
+
+        Returns:
+            str: 답변의 내용
+        """        
         return self.description

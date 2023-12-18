@@ -2,6 +2,9 @@ from django.db import models
 
 
 class Reply(models.Model):
+    """Reply 모델 클래스
+    UserSurvey와 SurveyQuestion에 대한 유저 응답
+    """    
     user_survey = models.ForeignKey("UserSurvey", on_delete=models.CASCADE, related_name="replies")
     survey_question = models.ForeignKey("SurveyQuestion", on_delete=models.CASCADE, related_name="replies")
     content = models.CharField(

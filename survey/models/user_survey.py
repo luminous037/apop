@@ -3,6 +3,10 @@ from django.conf import settings
 
 
 class UserSurvey(models.Model):
+    """UserSurvey 모델 클래스
+    User가 같은 survey라도 여러 번 수행할 수 있으므로
+    UserSurvey 테이블로 하나의 설문지 작성을 표현
+    """    
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -41,4 +45,9 @@ class UserSurvey(models.Model):
         ordering = ['create_at']
 
     def replies(self) -> models.QuerySet:
+        """설문지 인스턴스에 대한 응답들 반환
+
+        Returns:
+            models.QuerySet: 응답들
+        """        
         return self.replies().all()

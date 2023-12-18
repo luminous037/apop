@@ -8,6 +8,9 @@ TYPE_FILED = namedtuple(
 
 
 class Question(models.Model):
+    """Question 모델 클래스
+    Survey에서 수행해야 하는 질문
+    """    
     TYPE_FILED = [
         (TYPE_FILED.text, "text"),
         (TYPE_FILED.number, "number"),
@@ -64,5 +67,10 @@ class Question(models.Model):
         verbose_name_plural = "질문"
         ordering = ["create_at"]
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Question 인스턴스 출력 메서드
+
+        Returns:
+            str: Question 제목
+        """        
         return self.title
