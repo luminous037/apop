@@ -1,3 +1,5 @@
+from typing import Any
+from django.db.models.query import QuerySet
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from survey.models import Survey, Question, UserSurvey, Reply, SurveyQuestion
@@ -19,6 +21,22 @@ class SurveyDetailView(DetailView):
     """    
     template_name='survey/survey_detail.html'
     model=Survey
+    
+
+class UserSurveyListView(ListView):
+    template_name='survey/user_survey_list.html'
+    
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['survey'] = Survey.objects.get(**kwargs)
+        return context
+    
+    def get_queryset(self) -> QuerySet[Any]:
+        survey = Survey.objects.get(**self.kwargs)
+        queryset = UserSurvey.objects.filter(user=self.request.user, 
+                                             survey=survey).order_by('create_at')
+        return queryset
     
     
 class SurveyFormView(ProcessFormView):
