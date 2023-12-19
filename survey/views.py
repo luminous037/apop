@@ -5,9 +5,15 @@ from django.views.generic.detail import DetailView
 from survey.models import Survey, Question, UserSurvey, Reply, SurveyQuestion
 from django.views.generic.edit import ProcessFormView
 from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
-class SurveyListView(ListView):
+
+class MyLoginRequiredMixin(LoginRequiredMixin):
+    login_url = "/accounts/login/"
+    redirect_field_name = "redirect_to"
+
+class SurveyListView(MyLoginRequiredMixin, ListView):
     """참여 가능한 설문 목록을 제공하는 클래스 기반 뷰
     """    
     template_name='survey/survey_list.html'
@@ -15,7 +21,7 @@ class SurveyListView(ListView):
     paginate_by = 5
     
     
-class SurveyDetailView(DetailView):
+class SurveyDetailView(MyLoginRequiredMixin, DetailView):
     """설문에 대한 구체적인 정보를 제공하는 클래스 기반 뷰
     TODO 구현예정
     """    
@@ -23,7 +29,7 @@ class SurveyDetailView(DetailView):
     model=Survey
     
 
-class UserSurveyListView(ListView):
+class UserSurveyListView(MyLoginRequiredMixin, ListView):
     """설문 작성 결과를 제공하는 클래스 기반 뷰
     """    
     template_name='survey/user_survey_list.html'
@@ -50,8 +56,7 @@ class UserSurveyListView(ListView):
                                              survey=survey).order_by('create_at')
         return queryset
     
-    
-class SurveyFormView(ProcessFormView):
+class SurveyFormView(MyLoginRequiredMixin, ProcessFormView):
     """설문조사 폼을 제공하는 클래스 기반 뷰
     """
     
