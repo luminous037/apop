@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # custom app
     'survey',
     'huami',
+    'accounts',
 ]
 
 MIDDLEWARE = [
