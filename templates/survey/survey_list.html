@@ -23,7 +23,9 @@
                 <div class="d-grid gap-2 mx-auto">
                     <a class="btn btn-primary" href="{% url 'survey:survey-detail' survey.pk %}" role="button">작성하기</a>
                     <a class="btn btn-secondary" href="{% url 'survey:user-survey-list' survey.pk %}" role="button">목록보기</a>
-                    <a class="btn btn-danger" href="#" role="button">수정하기</a>
+                    {% if user.is_superuser %}
+                        <a class="btn btn-danger" href="#" role="button">수정하기</a>
+                    {% endif %}
                   </div>
             </div>
         </div>
