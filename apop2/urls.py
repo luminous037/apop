@@ -16,11 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import TemplateView
+from .views import HomeView
+
+app_name = 'apop'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('survey/', include('survey.urls')),
     path('accounts/', include('accounts.urls')),
-    path('', TemplateView.as_view(template_name='base.html'), name='home'),
+    path('', HomeView.as_view(), name='home'),
 ]
