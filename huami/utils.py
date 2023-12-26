@@ -261,3 +261,21 @@ class HuamiAmazfit:
             url=_assemble_url(name='logout'),
             data=_assemble_payload(name='logout', login_token=self.login_token)
         )
+        
+    @staticmethod
+    def is_valid(email: str, password: str) -> None:
+        """Huami 계정이 유효한지 검증
+
+        Args:
+            email (str): Huami 계정 이메일
+            password (str): Huami 계정 비밀번호
+
+        Raises:
+            value_error: AccessCode를 발급받을 수 없을 때 에러 발생
+                            이메일이나 비밀번호가 잘못 되었을 경우
+        """        
+        account = HuamiAmazfit(email, password)
+        try:
+            account.access()
+        except ValueError as value_error:
+            raise value_error
