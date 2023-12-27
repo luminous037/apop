@@ -134,9 +134,26 @@ class HuamiAmazfit:
         """        
         self.access_token = redirect_url_parameters["access"][0]
 
-    # @DeprecationWarning
-    def profile(self):
+    def _profile_process(self, profile_data: dict) -> dict:
+        """Profile 요청을 통해 받은 데이터를 생년월, 키(m), 무게(kg)로 나누어 반환
+
+        Args:
+            profile_data (dict): response.json() 그대로
+
+        Returns:
+            dict: {'birth': 'yyyy-mm', height: 'x.xx', weight: 'xx.x'}
+        """
+        return {
+            'birth': profile_data['birthday'],
+            'height': profile_data['height']/100,
+            'weight': profile_data['weight']
+        }
+    
+    def profile(self, process=True):
         """Huami 서버로 profile 정보를 요청
+        
+        Args:
+            process (bool): 데이터 가공 여부, 기본 True. (False인 경우 받은 그대로 반환)
         
         Returns:
             dict: 결과를 Json dict으로 전달
@@ -147,6 +164,8 @@ class HuamiAmazfit:
             headers={'apptoken': self.app_token,}
         )
         response.raise_for_status()
+        if process:
+            return self._profile_process(response.json())
         return response.json()
     
     def _band_data_process(self, band_data:dict) -> dict:
