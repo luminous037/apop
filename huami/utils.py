@@ -252,6 +252,7 @@ class HuamiAmazfit:
             for obj in json.loads(data['data']):
                 time = self._timestamp_to_datetime(obj['time'])
                 result[date][time.hour * 60 + time.minute] = obj['value']
+        return result
     
     def stress(self, from_date: str, to_date: str, process: bool = True):
         """Huami 서버로 stress 정보를 요청
