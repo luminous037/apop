@@ -6,12 +6,12 @@ from . import HuamiAccount
 class Base64Field(models.TextField):
     def to_python(self, value: Any) -> Any:
         if isinstance(value, str):
-            value = base64.decode(value)
+            value = base64.b64decode(value)
         return super().to_python(value)
 
     def get_prep_value(self, value: Any) -> Any:
         if isinstance(value, bytes):
-            value = base64.encode(value)
+            value = base64.b64encode(value)
         return super().get_prep_value(value)
     
 class HealthData(models.Model):
