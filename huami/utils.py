@@ -1,4 +1,6 @@
-import datetime
+import base64
+from datetime import datetime, timezone
+import json
 from huami.configs.errors import ERRORS
 from huami.configs.payloads import PAYLOADS
 from huami.configs.urls import URLS
@@ -146,13 +148,36 @@ class HuamiAmazfit:
         )
         response.raise_for_status()
         return response.json()
+    
+    def _band_data_process(self, band_data:dict) -> dict:
+        """band data 요청을 통해 받은 데이터를 날짜별 심박수, 수면 질, 걸음 수로 나누어 반환
 
-    def band_data(self, from_date: str, to_date: str):
+        Args:
+            band_data (dict): response.json() 그대로
+
+        Returns:
+            dict: {'yyyy-mm-dd': {
+                'heart': [], 'sleeps': [], 'steps: []
+            }, ...} 포맷 딕셔너리
+        """        
+        result = {}
+        for data in band_data["data"]:
+            complex_data = base64.b64decode(data['data'])
+            integers = [byte for byte in complex_data]
+            result[data['date_time']] = {
+                'heart': [integers[i] for i in range(0, len(integers), 3)],
+                'sleeps': [integers[i] for i in range(1, len(integers), 3)],
+                'steps': [integers[i] for i in range(2, len(integers), 3)]
+            }
+        return result
+
+    def band_data(self, from_date: str, to_date: str, process:bool = True):
         """Huami 서버로 band data 정보를 요청
         분당 수면 점수, 심박수 등
         Args:
             from_date (str): 'yyyy-mm-dd' 타입의 문자열
             to_date (str): 'yyyy-mm-dd' 타입의 문자열
+            process (bool): 데이터 가공 여부, 기본 True. (False인 경우 받은 그대로 반환)
 
         Returns:
             dict: 결과를 Json dict으로 전달
@@ -166,6 +191,8 @@ class HuamiAmazfit:
             headers={'apptoken':self.app_token}
         )
         response.raise_for_status()
+        if process:
+            return self._band_data_process(response.json())
         return response.json()
 
     def _time_for_stress(self, date: str) -> str:
@@ -177,14 +204,43 @@ class HuamiAmazfit:
         Returns:
             str: '1690803229711' 13자리 타임스탬프 형식의 문자열
         """        
-        return str(int(datetime.datetime.strptime(date + " 00:00:00.001", "%Y-%m-%d %H:%M:%S.%f").timestamp() * 1000))
+        return str(int(datetime.strptime(date + " 00:00:00.001", "%Y-%m-%d %H:%M:%S.%f").timestamp() * 1000))
 
-    def stress(self, from_date: str, to_date: str):
+    def _timestamp_to_datetime(self, timestamp: str) -> datetime:
+        """13자리 타임스탬프 형식의 문자열을 datetime으로 변환
+
+        Args:
+            timestamp (str): '1690803229711' 13자리 타임스탬프 형식의 문자열
+
+        Returns:
+            datetime: 현재 위치에 맞는 시간대가 적용된 datetime
+        """        
+        return datetime.utcfromtimestamp(float(timestamp)/1000).replace(tzinfo=timezone.utc).astimezone()
+
+    def _stress_data_process(self, stress_data: dict) -> dict:
+        """stress 요청을 통해 받은 데이터를 날짜별 스트레스로 변환
+
+        Args:
+            stress_data (dict): response.json() 그대로
+
+        Returns:
+            dict: {'yyyy-mm-dd': [0, 0, 4, ...], ...} 포맷 딕셔너리
+        """        
+        result = {}
+        for data in stress_data["items"]:
+            date = self._timestamp_to_datetime(data['timestamp']).strftime('%Y-%m-%d')
+            result[date] = [0 for _ in range(1440)]
+            for obj in json.loads(data['data']):
+                time = self._timestamp_to_datetime(obj['time'])
+                result[date][time.hour * 60 + time.minute] = obj['value']
+    
+    def stress(self, from_date: str, to_date: str, process: bool = True):
         """Huami 서버로 stress 정보를 요청
 
         Args:
             from_date (str): 'yyyy-mm-dd' 타입의 문자열
             to_date (str): 'yyyy-mm-dd' 타입의 문자열
+            process (bool): 데이터 가공 여부, 기본 True. (False인 경우 받은 그대로 반환)
 
         Returns:
             dict: 결과를 Json dict으로 전달
@@ -199,6 +255,8 @@ class HuamiAmazfit:
             headers={'apptoken':self.app_token}
         )
         response.raise_for_status()
+        if process:
+            return self._stress_data_process(response.json())
         return response.json()
     
     def _time_for_blood(self, date: str) -> str:
@@ -211,13 +269,32 @@ class HuamiAmazfit:
             str: 'yyyy-mm-ddThh:mm:ss' 형식의 문자열 ex) '2019-01-01T00:00:00'
         """        
         return date+"T00:00:00"
+    
+    def _blood_data_process(self, blood_data: dict) -> dict:
+        """blood 요청을 통해 받은 데이터를 날짜별 산소포화도로 변환
 
-    def blood_oxygen(self, from_date: str, to_date:str):
+        Args:
+            blood_data (dict): response.json() 그대로
+
+        Returns:
+            dict: {'yyyy-mm-dd': [0, 0, 4, ...], ...} 포맷 딕셔너리
+        """        
+        result = {}
+        for data in blood_data["items"]:
+            datetime = self._timestamp_to_datetime(data['timestamp'])
+            date = datetime.strftime('%Y-%m-%d')
+            if date not in result:
+                result[date] = [0 for _ in range(1440)]
+            result[date][datetime.hour * 60 + datetime.minute] = json.loads(data['extra'])['spo2']
+        return result
+
+    def blood_oxygen(self, from_date: str, to_date:str, process=True):
         """Huami 서버로 혈중산소포화도 정보를 요청
 
         Args:
             from_date (str): 'yyyy-mm-dd' 타입의 문자열
             to_date (str): 'yyyy-mm-dd' 타입의 문자열
+            process (bool): 데이터 가공 여부, 기본 True. (False인 경우 받은 그대로 반환)
 
         Returns:
             dict: 결과를 Json dict으로 전달
@@ -232,6 +309,8 @@ class HuamiAmazfit:
             headers={'apptoken':self.app_token}
         )
         response.raise_for_status()
+        if process:
+            return self._blood_data_process(response.json())
         return response.json()
 
     def access(self) -> None:
