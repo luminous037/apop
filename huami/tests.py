@@ -53,17 +53,15 @@ class HuamiAccountTestCase(TestCase):
         self.assertTrue(isinstance(response, dict))
 
     def testRequestData(self):
+        """전달받은 데이터의 형식 확인을 위해 json파일로 저장
+        """        
         self.correct_huami_account.access()
         self.correct_huami_account.login()
         band_response = self.correct_huami_account.band_data('2000-01-01', '2023-12-13')
         stress_response = self.correct_huami_account.stress('2000-01-01', '2023-12-13')
         blood_response = self.correct_huami_account.blood_oxygen('2000-01-01', '2023-12-13')
         
-        print(band_response)
-        print(stress_response)
-        print(blood_response)
-        
-        with open(file='log.txt', mode='w') as file:
+        with open(file='log.json', mode='w') as file:
             file.write('{"band data":')
             file.write(json.dumps(band_response))
             file.write(",")
