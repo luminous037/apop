@@ -1,3 +1,4 @@
+import datetime
 from huami.configs.errors import ERRORS
 from huami.configs.payloads import PAYLOADS
 from huami.configs.urls import URLS
@@ -167,19 +168,30 @@ class HuamiAmazfit:
         response.raise_for_status()
         return response.json()
 
+    def _time_for_stress(self, date: str) -> str:
+        """문자열 시간을 timestamp로 변환
+
+        Args:
+            date (str): 'yyyy-mm-dd' 타입의 문자열
+
+        Returns:
+            str: '1690803229711' 13자리 타임스탬프 형식의 문자열
+        """        
+        return str(int(datetime.datetime.strptime(date + " 00:00:00.001", "%Y-%m-%d %H:%M:%S.%f").timestamp() * 1000))
+
     def stress(self, from_date: str, to_date: str):
         """Huami 서버로 stress 정보를 요청
 
         Args:
-            from_date (str): 13자리 타임스탬프 형식의 문자열
-            to_date (str): '1690803229711' 13자리 타임스탬프 형식의 문자열
+            from_date (str): 'yyyy-mm-dd' 타입의 문자열
+            to_date (str): 'yyyy-mm-dd' 타입의 문자열
 
         Returns:
             dict: 결과를 Json dict으로 전달
         """        
         params = _assemble_payload(name='stress')
-        params['from']=from_date
-        params['to']=to_date
+        params['from']=self._time_for_stress(from_date)
+        params['to']=self._time_for_stress(to_date)
         response = requests.get(
             url=_assemble_url(name='stress',
                               user_id=self.user_id),
@@ -188,20 +200,31 @@ class HuamiAmazfit:
         )
         response.raise_for_status()
         return response.json()
+    
+    def _time_for_blood(self, date: str) -> str:
+        """문자열 시간을 blood 요청에 맞게 변환
+
+        Args:
+            date (str): 'yyyy-mm-dd' 타입의 문자열
+
+        Returns:
+            str: 'yyyy-mm-ddThh:mm:ss' 형식의 문자열 ex) '2019-01-01T00:00:00'
+        """        
+        return date+"T00:00:00"
 
     def blood_oxygen(self, from_date: str, to_date:str):
         """Huami 서버로 혈중산소포화도 정보를 요청
 
         Args:
-            from_date (str): 'yyyy-mm-ddThh:mm:ss' 형식의 문자열 ex) '2019-01-01T00:00:00'
-            to_date (str): 'yyyy-mm-ddThh:mm:ss' 형식의 문자열
+            from_date (str): 'yyyy-mm-dd' 타입의 문자열
+            to_date (str): 'yyyy-mm-dd' 타입의 문자열
 
         Returns:
             dict: 결과를 Json dict으로 전달
         """        
         params = _assemble_payload(name='blood_oxygen')
-        params['from']=from_date
-        params['to']=to_date
+        params['from']=self._time_for_blood(from_date)
+        params['to']=self._time_for_blood(to_date)
         response = requests.get(
             url=_assemble_url(name='blood_oxygen',
                               user_id=self.user_id),

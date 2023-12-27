@@ -2,6 +2,9 @@ from datetime import datetime
 
 from django.db import models
 from django.conf import settings
+from requests import HTTPError
+
+from huami.utils import HuamiAmazfit
 
 default_sny_date = datetime(1970, 1, 1)
 
@@ -57,11 +60,30 @@ class HuamiAccount(models.Model):
         verbose_name_plural = "화웨이 계정"
         ordering = ["email", "sync_date"]
 
-    def reset_sync_date(self):
+    def reset_sync_date(self) -> None:
         """동기화 시간 초기화
         """        
         self.sync_date = default_sny_date
         self.save()
+        
+    def get_data(self) -> dict:
+        """현재 계정 정보로 데이터 수집
+
+        Raises:
+            HTTPError: 처리 과정 중 오류
+
+        Returns:
+            dict: 심박수, 스트레스, 걸음 수, 수면 질, SPO2 에 대한 정보
+        """        
+        result = {}
+        account = HuamiAmazfit(email=self.email, password=self.password)
+        try:
+            account.access()
+            account.login()
+            result['heart_rate'] = account.band_data()
+            account.logout()
+        except HTTPError as e:
+            raise HTTPError("데이터를 받아오는 과정에서 오류가 발생하였습니다. 오류내용: "+e)
 
 
 # Create your models here.
