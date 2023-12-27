@@ -4,6 +4,7 @@ from django.views.generic import View, TemplateView
 from django.urls import reverse_lazy
 from huami.forms import HuamiAccountCreationForm
 from django.contrib.auth.forms import UserCreationForm
+from .forms import MyAuthenticationForm
 
 # Create your views here.
 class LoginView(Login):
@@ -25,11 +26,11 @@ class LogoutView(Logout):
 class SignUpView(View):
     """회원가입 페이지를 제공하는 클래스 기반 뷰
     """    
-    form_class = [HuamiAccountCreationForm, UserCreationForm]
+    form_class = [HuamiAccountCreationForm, MyAuthenticationForm]
     template_name = 'accounts/signup.html'
     
     def get(self, request, *args, **kwargs):
-        """로그인 폼 입력 화면
+        """회원가입 폼 입력 화면
 
         Args:
             request (HttpRequest): HttpRequest 정보
@@ -37,13 +38,13 @@ class SignUpView(View):
         Returns:
             HttpResponse: 렌더링 된 입력화면 HTML
         """        
-        account_form = self.form_class[0]
-        huami_account_form = self.form_class[1]
+        account_form = self.form_class[1]
+        huami_account_form = self.form_class[0]
         return render(request, self.template_name, {'account_form': account_form,
                                                     'huami_account_form': huami_account_form})
     
     def post(self, request, *args, **kwargs):
-        """로그인 폼 제출 화면
+        """회원가입 폼 제출 화면
 
         Args:
             request (HttpRequest): HttpRequest 정보
@@ -51,8 +52,8 @@ class SignUpView(View):
         Returns:
             HttpResponse: 입력에 따라 렌러딩 된 결과화면 HTML
         """        
-        account_form = UserCreationForm(request.POST)
-        huami_account_form = HuamiAccountCreationForm(request.POST)
+        account_form = self.form_class[1](request.POST)
+        huami_account_form = self.form_class[0](request.POST)
         
         #HuamiAccountCreationForm에서 계정 정보가 유효한지 검증
         if account_form.is_valid() and huami_account_form.is_valid():
