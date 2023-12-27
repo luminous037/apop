@@ -5,6 +5,7 @@ from django.test import TestCase
 from huami.configs.payloads import PAYLOADS
 from huami.models import HuamiAccount
 from huami.utils import HuamiAmazfit
+from django.contrib.auth import get_user_model
 
 
 # Create your tests here.
@@ -15,12 +16,14 @@ class HuamiAccountTestCase(TestCase):
         """Correct 계정과 Wrong 계정 설정
         Manual로 해주어야 함
         """        
+        user = get_user_model().objects.create(username='testman', password='test1')
         self.correct_email = ""
         self.correct_password = ""
         self.wrong_email = ""
         self.wrong_password = ""
+        self.huami = HuamiAccount.objects.create(user=user, email=self.correct_email, password=self.correct_password)
         self.correct_huami_account = HuamiAmazfit(self.correct_email, self.correct_password)
-        self.invalid_huami_account = HuamiAccount(self.wrong_email, self.wrong_password)
+        self.invalid_huami_account = HuamiAmazfit(self.wrong_email, self.wrong_password)
 
     def testHuamiGetAccessToken(self):
         """계정이 존재하는지 확인
@@ -71,3 +74,12 @@ class HuamiAccountTestCase(TestCase):
             file.write('"blood response":')
             file.write(json.dumps(blood_response))
             file.write("}")
+        
+        # self.correct_huami_account.logout()
+            
+    def testGetData(self):
+        """HaumiAccount모델에서 데이터를 가져오는 것 검사
+        """        
+        result = self.huami.get_data()
+        with open(file='log.json', mode='w') as file:
+            file.write(json.dumps(result))
