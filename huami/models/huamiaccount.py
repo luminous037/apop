@@ -73,17 +73,21 @@ class HuamiAccount(models.Model):
             HTTPError: 처리 과정 중 오류
 
         Returns:
-            dict: 심박수, 스트레스, 걸음 수, 수면 질, SPO2 에 대한 정보
+            dict: 심박수, 스트레스, 걸음 수, 수면 질, SPO2, 무게, 키 에 대한 정보
         """        
         result = {}
         account = HuamiAmazfit(email=self.email, password=self.password)
         try:
             account.access()
             account.login()
-            result['heart_rate'] = account.band_data()
+            result['profile'] = account.profile()            
+            result['band'] = account.band_data('2000-01-01', datetime.now().strftime('%Y-%m-%d'))
+            result['stress'] = account.stress('2000-01-01', datetime.now().strftime('%Y-%m-%d'))
+            result['blood'] = account.blood_oxygen('2000-01-01',datetime.now().strftime('%Y-%m-%d'))
             account.logout()
         except HTTPError as e:
             raise HTTPError("데이터를 받아오는 과정에서 오류가 발생하였습니다. 오류내용: "+e)
+        return result
 
 
 # Create your models here.
