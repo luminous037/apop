@@ -1,6 +1,39 @@
 {% extends 'accounts/base.html' %}
 
-{% block content %}
-<h1>회원가입에 성공했습니다!</h1>
+{# Load the tag library #}
+{% load django_bootstrap5 %}
 
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+{% load static %}
+
+{% block content %}
+<section class="h-100 h-custom gradient-custom-2">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-6">
+          <div class="card card-registration card-registration-2" style="border-radius: 15px;">
+            <div class="card-body p-0">
+              <div class="row g-0">
+                <div class="col-lg-12">
+                  <div class="p-5 text-center">
+                    <h3 class="fw-normal mb-5" style="color: #140e3a;">회원 가입이 완료되었습니다.</h3>
+                    <p class="lead">관리자의 요청을 수행해주세요.</p>
+                    <div class="p-5 text-center">
+                      <a class="btn btn-secondary" href="{% url 'accounts:login' %}" role="button">로그인</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock content %}
