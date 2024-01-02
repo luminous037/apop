@@ -1,12 +1,12 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.views import LoginView as Login, LogoutView as Logout
-from django.views.generic import View, TemplateView, ListView
+from django.views.generic import View, TemplateView, ListView, DetailView
 from django.urls import reverse_lazy
 from huami.forms import HuamiAccountCreationForm
-from django.contrib.auth.forms import UserCreationForm
 from .forms import MyAuthenticationForm
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 # Create your views here.
 class LoginView(Login):
@@ -76,11 +76,24 @@ class SuccessSignUpView(TemplateView):
     template_name = 'accounts/successSignup.html'
 
 
-class UserManageView2(TemplateView):
-    template_name = 'accounts/userManage.html'
+class SuperuserRequiredMixin(UserPassesTestMixin):
+    """관리자만 접근하도록 지정하는 믹스인
+    """    
+    def test_func(self):
+        return self.request.user.is_superuser
     
 
-class UserManageView(ListView):
+class UserInfoView(DetailView, SuperuserRequiredMixin):
+    """유저 정보를 제공하기 위한 클래스 기반 뷰
+    """
+    model = get_user_model()
+    context_object_name = 'userInfo'
+    template_name = 'accounts/userInfo.html'
+    
+
+class UserManageView(ListView, SuperuserRequiredMixin):
+    """유저 정보들을 리스트로 제공하기 위한 클래스 기반 뷰
+    """    
     template_name = 'accounts/userManage.html'
     model = settings.AUTH_USER_MODEL
     context_object_name = 'users'
