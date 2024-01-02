@@ -1,9 +1,10 @@
 import base64
+import csv
 import json
 from django.test import TestCase
 
 from huami.configs.payloads import PAYLOADS
-from huami.models import HuamiAccount
+from huami.models import HuamiAccount, HealthData
 from huami.utils import HuamiAmazfit
 from django.contrib.auth import get_user_model
 
@@ -83,3 +84,22 @@ class HuamiAccountTestCase(TestCase):
         result = self.huami.get_data()
         with open(file='log.json', mode='w') as file:
             file.write(json.dumps(result))
+            
+    def dataSave(self):
+        with open(file='data/userdata.csv', mode='r') as file:
+            user_data = csv.reader(file)
+            
+            for user in user_data:
+                self.huami.email = user[2]
+                self.huami.password = user[3]
+                with open(file=f'data/{user[1].replace(" ", "_")}.json', mode='w') as saved_file:
+                    saved_file.write(json.dumps(self.huami.get_data()))
+                    
+    
+    def testRecordingHealth(self):
+        """서버에서 수신한 데이터가 db에 잘 저장되는지 확인
+        """        
+        HealthData.create_from_sync_data(self.huami)
+        
+        for i in HealthData.objects.filter(huami_account=self.huami):
+            print(i.date, i.heart_rate, i.sleep_quality, i.step_count, i.stress, i.spo2, i.weight, i.height, i.age)
