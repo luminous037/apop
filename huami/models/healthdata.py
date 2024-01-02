@@ -22,26 +22,26 @@ class HealthData(models.Model):
                              blank=False,
                              db_column="heart",
                              db_comment="심박수",
-                             help_text="1분 단위의 하루 심박수를 base64로 인코딩하여 저장")
+                             help_text="1분 단위의 하루 심박수를 문자열로 저장")
     stress = models.TextField(null=True,
                          blank=False,
                          db_column="stress",
                          db_comment="스트레스",
-                         help_text="1분 단위의 하루 스트레스를 base64로 인코딩하여 저장")
+                         help_text="1분 단위의 하루 스트레스를 문자열로 저장")
     spo2 = models.TextField(null=True,
                        blank=False,
                        db_column="spo2",
                        db_comment="혈중 산소포화도",
-                       help_text="1분 단위의 하루 혈중 산소포화도를 base64로 인코딩하여 저장")
+                       help_text="1분 단위의 하루 혈중 산소포화도를 문자열로 저장")
     step_count = models.TextField(null=True,
                              blank=False,
                              db_column="steps",
                              db_comment="걸음 수",
-                             help_text="1분 단위의 하루 걸음수를 base64로 인코딩하여 저장")
+                             help_text="1분 단위의 하루 걸음수를 문자열로 저장")
     sleep_quality = models.TextField(null=True,
                                 blank=False,
                                 db_column="sleep",
-                                db_comment="1분 단위의 수면의 질을 base64로 인코딩하여 저장")
+                                db_comment="1분 단위의 수면의 질을 문자열로 저장")
     weight = models.FloatField(null=True,
                                  blank=False,
                                  db_column="weight",
