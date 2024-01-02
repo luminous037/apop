@@ -64,6 +64,16 @@ class HealthData(models.Model):
                                db_column="height",
                                db_comment="키(m)",
                                help_text="키를 입력해주세요. (m단위)")
+    age = models.IntegerField(null=False,
+                              blank=False,
+                              db_column="age",
+                              db_comment="나이",
+                              help_text="나이를 입력하세요 (세)")
+    
+    @classmethod
+    def create_from_sync_data(cls, huami_account: HuamiAccount):
+        result = huami_account.get_data()
+        
     
     @property
     def bmi(self) -> float:
