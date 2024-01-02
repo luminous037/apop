@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+{# Load the tag library #}
+{% load django_bootstrap5 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+{% load static %}
+
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>중견연구</title>
+    </head>
+
+    <body>
+        {% include 'header.html' %}
+
+        <body>
+            {% block content %}
+            {% endblock content %}
+        </body>
+
+        <div class="container">
+            {% include 'footer.html' %}
+        </div>
+    </body>
+
+</html>
