@@ -1,10 +1,12 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.views import LoginView as Login, LogoutView as Logout
-from django.views.generic import View, TemplateView
+from django.views.generic import View, TemplateView, ListView
 from django.urls import reverse_lazy
 from huami.forms import HuamiAccountCreationForm
 from django.contrib.auth.forms import UserCreationForm
 from .forms import MyAuthenticationForm
+from django.conf import settings
+from django.contrib.auth import get_user_model
 
 # Create your views here.
 class LoginView(Login):
@@ -72,4 +74,15 @@ class SuccessSignUpView(TemplateView):
     """회원가입 성공 화면 제공을 위한 클래스 기반 뷰
     """    
     template_name = 'accounts/successSignup.html'
-        
+
+
+class UserManageView2(TemplateView):
+    template_name = 'accounts/userManage.html'
+    
+
+class UserManageView(ListView):
+    template_name = 'accounts/userManage.html'
+    model = settings.AUTH_USER_MODEL
+    context_object_name = 'users'
+    queryset = get_user_model().objects.filter(is_superuser=False)
+    paginate_by = 5
