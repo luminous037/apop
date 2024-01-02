@@ -45,6 +45,18 @@ class HuamiAccount(models.Model):
         help_text="화웨이 계정 동기화 날짜",
         default=default_sny_date,
     )
+    note = models.TextField(
+        db_column="note",
+        db_comment="information of user",
+        null=True,
+        blank=True,
+        help_text="사용자에 대한 간략한 설명",
+        default="정보를 입력해주세요."
+    )
+    
+    @property
+    def full_name(self) -> str:
+        return f"{self.user.last_name} {self.user.first_name}"
 
     def __str__(self) -> str:
         """HuamiAccount 인스턴스 출력 메서드
