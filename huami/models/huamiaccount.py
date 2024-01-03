@@ -99,6 +99,9 @@ class HuamiAccount(models.Model):
             account.logout()
         except HTTPError as e:
             raise HTTPError("데이터를 받아오는 과정에서 오류가 발생하였습니다. 오류내용: "+e)
+        self.sync_date = datetime.now()
+        self.save()
+        
         return result
 
 
