@@ -1,6 +1,6 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.views import LoginView as Login, LogoutView as Logout
-from django.views.generic import View, TemplateView, ListView, DetailView
+from django.views.generic import View, TemplateView, ListView, DetailView, UpdateView
 from django.urls import reverse_lazy
 from huami.forms import HuamiAccountCreationForm
 from .forms import MyAuthenticationForm
@@ -99,3 +99,13 @@ class UserManageView(ListView, SuperuserRequiredMixin):
     context_object_name = 'users'
     queryset = get_user_model().objects.filter(is_superuser=False)
     paginate_by = 5
+
+
+class UserNoteUpdateView(View, SuperuserRequiredMixin):
+    """유저에 대한 비고란을 수정하기 위한 클래스 기반 뷰
+    """
+    def post(self, request, pk):
+        user = get_object_or_404(get_user_model(), pk=pk)
+        user.huami.note = request.POST['note']
+        user.huami.save()
+        return redirect(reverse_lazy('accounts:userInfo', kwargs={'pk': pk}))

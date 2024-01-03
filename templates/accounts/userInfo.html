@@ -21,11 +21,11 @@
                 <hr>
             </div>
 
-            <form action="" method="post">
+            <form action="{% url 'accounts:updateNote' userInfo.pk %}" method="post">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="note">참고사항</label>
-                    <textarea class="form-control" id="note" rows="5">{{ userInfo.huami.note }}</textarea>
+                    <textarea class="form-control" id="note" rows="5" name="note">{{ userInfo.huami.note }}</textarea>
                 </div>
                 <button type="submit" class="btn btn-primary mt-2 mb-5">수정하기</button>
             </form>
