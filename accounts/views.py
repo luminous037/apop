@@ -142,8 +142,9 @@ class HealthDataCsvDownloadView(View, SuperuserRequiredMixin):
     
     def get(self, request, pk):
         user = get_object_or_404(get_user_model(), pk=pk)
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = f'attachment; filename="{pk}.csv"'
+        response = HttpResponse(headers={
+            'Content-Type':'text/csv',
+            'Content-Disposition': f'attachment; filename="{pk}.csv"'})
         
         writer = csv.writer(response)
         writer.writerow(['year', 'month', 'day', 'hour', 'minute', 
