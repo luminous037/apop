@@ -109,3 +109,7 @@ class HealthData(models.Model):
     @property
     def bmi(self) -> float:
         return self.weight / (self.height^2)
+    
+    class Meta:
+        verbose_name = "건강 데이터"
+        verbose_name_plural = "건강 데이터"
