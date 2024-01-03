@@ -48,7 +48,32 @@
                   </tr>
                 </thead>
                 <tbody>
-                  {{ userInfo.huami.health }}
+                  {% for health in userInfo.huami.health.all %}
+                    <tr>
+                      <th scope="col">{{ health.date }}</th>
+                      <td scope="col">
+                        {% if health.heart_rate != None %}
+                          O
+                        {% else %}
+                          X
+                        {% endif %}
+                      </td>
+                      <td scope="col">
+                        {% if health.stress != None %}
+                          O
+                        {% else %}
+                          X
+                        {% endif %}
+                      </td>
+                      <td scope="col">
+                        {% if health.spo2 != None %}
+                          O
+                        {% else %}
+                          X
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
                 </tbody>
               </table>
         </div>
