@@ -59,6 +59,7 @@ class HealthData(models.Model):
                               help_text="나이를 입력하세요 (세)")
     
     @classmethod
+    #Code Smell
     def create_from_sync_data(cls, huami_account: HuamiAccount) -> tuple:
         """Huami서버에서 가져온 데이터를 DB에 저장
 
