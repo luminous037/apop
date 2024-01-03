@@ -1,12 +1,14 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.views import LoginView as Login, LogoutView as Logout
-from django.views.generic import View, TemplateView, ListView, DetailView, UpdateView
+from django.views.generic import View, TemplateView, ListView, DetailView
 from django.urls import reverse_lazy
 from huami.forms import HuamiAccountCreationForm
+from huami.models.healthdata import HealthData
 from .forms import MyAuthenticationForm
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib import messages
 
 # Create your views here.
 class LoginView(Login):
@@ -103,9 +105,25 @@ class UserManageView(ListView, SuperuserRequiredMixin):
 
 class UserNoteUpdateView(View, SuperuserRequiredMixin):
     """유저에 대한 비고란을 수정하기 위한 클래스 기반 뷰
+    post요청만 지원
     """
     def post(self, request, pk):
         user = get_object_or_404(get_user_model(), pk=pk)
         user.huami.note = request.POST['note']
         user.huami.save()
+        return redirect(reverse_lazy('accounts:userInfo', kwargs={'pk': pk}))
+
+
+class UserHealthDataSyncView(View, SuperuserRequiredMixin):
+    """유저의 데이터 동기화를 위한 클래스 기반 뷰
+    get요청만 지원
+    """    
+    def get(self, request, pk):
+        user = get_object_or_404(get_user_model(), pk=pk)
+        try:
+            health_data = HealthData.create_from_sync_data(user.huami)
+            messages.success(request, f"{len(health_data)}일의 데이터가 추가되었습니다.")
+        except Exception as e:
+            messages.error(request, "동기화 과정 중 오류가 발생하였습니다.")
+            
         return redirect(reverse_lazy('accounts:userInfo', kwargs={'pk': pk}))

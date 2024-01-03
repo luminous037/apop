@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import LoginView, LogoutView, SignUpView, SuccessSignUpView, UserInfoView, UserManageView, UserNoteUpdateView
+from .views import LoginView, LogoutView, SignUpView, SuccessSignUpView, UserHealthDataSyncView, UserInfoView, UserManageView, UserNoteUpdateView
 
 app_name = 'accounts'
 
@@ -10,5 +10,6 @@ urlpatterns = [
     path('successSignup/', SuccessSignUpView.as_view(), name='successSignup'),
     path('manage/', UserManageView.as_view(), name='userManage'),
     path('info/<int:pk>/', UserInfoView.as_view(), name='userInfo'),
-    path('<int:pk>/updateNote/', UserNoteUpdateView.as_view(), name='updateNote')
+    path('<int:pk>/updateNote/', UserNoteUpdateView.as_view(), name='updateNote'),
+    path('<int:pk>/syncData/', UserHealthDataSyncView.as_view(), name='syncHealth')
 ]
