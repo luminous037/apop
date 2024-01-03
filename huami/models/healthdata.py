@@ -65,6 +65,9 @@ class HealthData(models.Model):
 
         Args:
             huami_account (HuamiAccount): Huami 계정
+        
+        Returns:
+            tuple[HealthData]: 동기화된 건강 기록 데이터들
         """        
         def _get_or_create() -> tuple[HealthData, bool]:
             """각 날짜마다 중복되는 작업들의 모임
@@ -103,7 +106,7 @@ class HealthData(models.Model):
             health.save()
             updated_health.append(health)
             
-        return updated_health
+        return set(updated_health)
         
     
     @property
