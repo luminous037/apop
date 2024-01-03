@@ -5,7 +5,7 @@
         <div class="card-body">
             <div class="d-flex w-100 justify-content-between">
                 <h3 class="card-title">{{ userInfo.huami.full_name }}</h3>
-                <small>{{ userInfo.huami.sync_date }}</small>
+                <small>마지막 동기화: {{ userInfo.huami.sync_date }}</small>
             </div>
             <div class="row">
                 <label for="userId" class="col-sm-2 col-form-label">유저아이디</label>
@@ -27,11 +27,15 @@
                     <label for="note">참고사항</label>
                     <textarea class="form-control" id="note" rows="5" name="note">{{ userInfo.huami.note }}</textarea>
                 </div>
-                <button type="submit" class="btn btn-primary mt-2 mb-5">수정하기</button>
+                <button type="submit" class="btn btn-primary mt-2">수정하기</button>
             </form>
+            <hr>
             
             <div class="d-flex w-100 justify-content-between">
-               <h4>데이터 수집 현황</h4>
+              <div>
+                <h4>데이터 수집 현황</h4>
+                <a href="{% url 'accounts:csvDownload' userInfo.pk %}"  target="_blank" class="btn btn-secondary">CSV로 저장</a>
+              </div>
               <form action="{% url 'accounts:syncHealth' userInfo.pk %}">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-secondary">동기화</button>

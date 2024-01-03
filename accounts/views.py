@@ -1,3 +1,5 @@
+import csv
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.views import LoginView as Login, LogoutView as Logout
 from django.views.generic import View, TemplateView, ListView, DetailView
@@ -127,3 +129,36 @@ class UserHealthDataSyncView(View, SuperuserRequiredMixin):
             messages.error(request, "동기화 과정 중 오류가 발생하였습니다.")
             
         return redirect(reverse_lazy('accounts:userInfo', kwargs={'pk': pk}))
+    
+
+class HealthDataCsvDownloadView(View, SuperuserRequiredMixin):
+    """유저 데이터를 csv로 전달하는 클래스 기반 뷰
+    get요청만 지원
+    """    
+    def _make_list(self, data):
+        if data == None:
+            return [None for i in range(1440)]
+        return [int(i.strip()) for i in data[1:-1].split(",")]
+    
+    def get(self, request, pk):
+        user = get_object_or_404(get_user_model(), pk=pk)
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="{pk}.csv"'
+        
+        writer = csv.writer(response)
+        writer.writerow(['year', 'month', 'day', 'hour', 'minute', 
+                         'age', 'height', 'weight', 'bmi', 
+                         'heart', 'sleep', 'step', 'stress', 'spo2'])
+        for health in user.huami.health.all():
+            heart = self._make_list(health.heart_rate)
+            sleep = self._make_list(health.sleep_quality)
+            steps = self._make_list(health.step_count)
+            stress = self._make_list(health.stress)
+            spo2 = self._make_list(health.spo2)
+            for minute in range(0, 1440):
+                writer.writerow([health.date.year, health.date.month, health.date.day, minute // 60, minute % 60,
+                                health.age, health.height, health.weight, health.bmi,
+                                heart[minute], sleep[minute], steps[minute], stress[minute], spo2[minute]
+                                ])
+        
+        return response
