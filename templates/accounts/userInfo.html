@@ -34,7 +34,7 @@
             <div class="d-flex w-100 justify-content-between">
               <div>
                 <h4>데이터 수집 현황</h4>
-                <a href="{% url 'accounts:csvDownload' userInfo.pk %}"  target="_blank" class="btn btn-secondary">CSV로 저장</a>
+                <a href="{% url 'accounts:csvDownload' userInfo.pk %}" class="btn btn-secondary">CSV로 저장</a>
               </div>
               <form action="{% url 'accounts:syncHealth' userInfo.pk %}">
                 {% csrf_token %}
