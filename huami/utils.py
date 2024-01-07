@@ -186,7 +186,7 @@ class HuamiAmazfit:
             integers = [byte for byte in complex_data]
             result[data['date_time']] = {
                 'heart': [heart_data[i] % 255 for i in range(0, len(heart_data))],
-                'sleeps': [integers[i] for i in range(1, len(integers), 3)],
+                'sleeps': [integers[i] for i in range(0, len(integers), 3)],
                 'steps': [integers[i] for i in range(2, len(integers), 3)]
             }
         return result
