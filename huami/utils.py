@@ -182,9 +182,10 @@ class HuamiAmazfit:
         result = {}
         for data in band_data["data"]:
             complex_data = base64.b64decode(data['data'])
+            heart_data = base64.b64decode(data['data_hr'])
             integers = [byte for byte in complex_data]
             result[data['date_time']] = {
-                'heart': [integers[i] for i in range(0, len(integers), 3)],
+                'heart': [heart_data[i] % 255 for i in range(0, len(heart_data))],
                 'sleeps': [integers[i] for i in range(1, len(integers), 3)],
                 'steps': [integers[i] for i in range(2, len(integers), 3)]
             }
