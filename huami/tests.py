@@ -1,4 +1,3 @@
-import base64
 import csv
 import json
 from django.test import TestCase
@@ -89,12 +88,55 @@ class HuamiAccountTestCase(TestCase):
         with open(file='data/userdata.csv', mode='r') as file:
             user_data = csv.reader(file)
             
-            for user in user_data:
-                self.huami.email = user[2]
-                self.huami.password = user[3]
-                with open(file=f'data/{user[1].replace(" ", "_")}.json', mode='w') as saved_file:
-                    saved_file.write(json.dumps(self.huami.get_data()))
+        for user in user_data:
+            self.huami.email = user[2]
+            self.huami.password = user[3]
+            with open(file=f'data/{user[1].replace(" ", "_")}.json', mode='w') as saved_file:
+                saved_file.write(json.dumps(self.huami.get_data()))
                     
+    def _make_list(self, data):
+        if data == None:
+            return [None for i in range(1440)]
+        return [int(i.strip()) for i in data[1:-1].split(",")]                
+    
+    def csvSave(self):
+        """userdata기반으로 동기화된 데이터를 csv파일로 저장
+        """        
+        with open(file='data/userdata.csv', mode='r') as file:
+            user_data = csv.reader(file)
+            
+            i = 12
+            j = 0
+            
+            for users in user_data:
+                if j == i:
+                    user = users
+                    break
+                j = j + 1
+                
+            user_model = get_user_model().objects.create(username=user[0], password='test')
+            
+            huami = HuamiAccount.objects.create(user=user_model, email=user[2], password=user[3])
+            
+            HealthData.create_from_sync_data(huami)
+            
+            with open(file=f'data/{user[1].replace(" ", "_")}.csv', mode='w') as saved_file:
+                writer = csv.writer(saved_file)
+                writer.writerow(['year', 'month', 'day', 'hour', 'minute', 
+                        'age', 'height', 'weight', 'bmi', 
+                        'heart', 'sleep', 'step', 'stress', 'spo2'])
+            
+                for health in huami.health.all():
+                    heart = self._make_list(health.heart_rate)
+                    sleep = self._make_list(health.sleep_quality)
+                    steps = self._make_list(health.step_count)
+                    stress = self._make_list(health.stress)
+                    spo2 = self._make_list(health.spo2)
+                    for minute in range(0, 1440):
+                        writer.writerow([health.date.year, health.date.month, health.date.day, minute // 60, minute % 60,
+                                        health.age, health.height, health.weight, health.bmi,
+                                        heart[minute], sleep[minute], steps[minute], stress[minute], spo2[minute]
+                                        ])
     
     def testRecordingHealth(self):
         """서버에서 수신한 데이터가 db에 잘 저장되는지 확인
