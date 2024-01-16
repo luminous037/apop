@@ -13,7 +13,9 @@ services:
       - apop
   
   apop:
-    image: dailab/apop
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: apop
     networks:
       - network
@@ -27,6 +29,21 @@ services:
       - "8000:8000"
     expose:
       - "8000"
+    depends_on:
+      - mariadb
+  
+  mariadb:
+    image: mariadb:11.1.3
+    networks:
+      - network
+    ports:
+      - "3306:3306"
+    environment:
+      MARIADB_DATABASE : apop
+      MARIADB_USER: example-user
+      MARIADB_PASSWORD: example-password
+      MARIADB_ROOT_PASSWORD: example
+    
 
 networks:
   network:

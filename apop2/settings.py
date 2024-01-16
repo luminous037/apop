@@ -27,6 +27,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "apop",
+        "USER": "example-user", 
+        "PASSWORD": "example-password", 
+        # "HOST": ,
+        "PORT": "3306"
+    }
+}
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -120,9 +131,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_ROOT = BASE_DIR / 'static'
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "apop2", "static")]
+STATICFILES_DIRS = [BASE_DIR / 'apop2']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
