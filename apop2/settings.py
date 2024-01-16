@@ -27,17 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "apop",
-        "USER": "example-user", 
-        "PASSWORD": "example-password", 
-        # "HOST": ,
-        "PORT": "3306"
-    }
-}
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -91,10 +80,18 @@ WSGI_APPLICATION = 'apop2.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "apop",
+        "USER": "example-user", 
+        "PASSWORD": "example-password", 
+        # "HOST": ,
+        "PORT": "3306"
+    },
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
 }
 
 # Password validation
