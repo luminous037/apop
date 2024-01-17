@@ -57,6 +57,12 @@ class HealthData(models.Model):
                               db_column="age",
                               db_comment="나이",
                               help_text="나이를 입력하세요 (세)")
+    note = models.TextField(null=False,
+                            blank=True,
+                            db_column="note",
+                            db_comment="비고",
+                            help_text="건강상태에 대한 기록을 입력하세요.",
+                            default="[비고]")
     
     @classmethod
     #Code Smell
