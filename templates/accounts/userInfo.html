@@ -49,6 +49,7 @@
                     <th scope="col">심박수, 수면질, 걸음수</th>
                     <th scope="col">스트레스</th>
                     <th scope="col">산소포화도</th>
+                    <th scope="col">비고</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -75,6 +76,23 @@
                         {% else %}
                           X
                         {% endif %}
+                      </td>
+                      <td scope="col">
+                        <form action="{% url 'accounts:userHealthInfo' health.pk %}" method="post">
+                          {% csrf_token %}
+                          <div class="row">
+                            <div class="col-10">
+
+                              <div class="form-group">
+                                  <textarea class="form-control" id="note" rows="3" name="note">{{ health.note }}</textarea>
+                              </div>
+                            </div>
+                            <div class="col-2">
+                              <button type="submit" class="btn btn-primary mt-2">수정하기</button>  
+
+                            </div>
+                          </div>
+                      </form>
                       </td>
                     </tr>
                   {% endfor %}

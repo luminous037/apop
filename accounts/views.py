@@ -116,6 +116,16 @@ class UserNoteUpdateView(View, SuperuserRequiredMixin):
         return redirect(reverse_lazy('accounts:userInfo', kwargs={'pk': pk}))
 
 
+class UserHealthNoteUpdateView(View, SuperuserRequiredMixin):
+    """유저가 가진 건강 정보의 비고란을 수정하기 위한 클래스 기반 뷰
+    post요청만 지원
+    """    
+    def post(self, request, pk):
+        health_data = get_object_or_404(HealthData, pk=pk)
+        health_data.note = request.POST['note']
+        health_data.save()
+        return redirect(reverse_lazy('accounts:userInfo', kwargs={'pk': health_data.huami_account.user.pk}))
+
 class UserHealthDataSyncView(View, SuperuserRequiredMixin):
     """유저의 데이터 동기화를 위한 클래스 기반 뷰
     get요청만 지원
