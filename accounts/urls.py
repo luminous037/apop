@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import HealthDataCsvDownloadAPIView, HealthDataCsvDownloadView, LoginView, LogoutView, SignUpView, SuccessSignUpView, UserHealthDataSyncView, UserHealthNoteUpdateView, UserInfoView, UserManageView, UserNoteUpdateView
+from .views import HealthDataCsvDownloadAPIView, HealthDataCsvDownloadView, LoginView, LogoutView, SignUpView, SuccessSignUpView, UserHealthDataSyncView, UserHealthNoteUpdateView, UserInfoView, UserManageView, UserNoteUpdateView, UserPrimaryKeyAPIView
 
 app_name = 'accounts'
 
@@ -14,5 +14,6 @@ urlpatterns = [
     path('<int:pk>/updateNote/', UserNoteUpdateView.as_view(), name='updateNote'),
     path('<int:pk>/syncData/', UserHealthDataSyncView.as_view(), name='syncHealth'),
     path('<int:pk>/csvData/', HealthDataCsvDownloadView.as_view(), name='csvDownload'),
-    path('users/<int:pk>/healthData.csv', HealthDataCsvDownloadAPIView.as_view(), name='csvDownloadApi')
+    path('users/<int:pk>/healthData.csv', HealthDataCsvDownloadAPIView.as_view(), name='csvDownloadApi'),
+    path('users.csv', UserPrimaryKeyAPIView.as_view(), name="usersCsvDownloadApi")
 ]

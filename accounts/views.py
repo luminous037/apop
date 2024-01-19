@@ -189,5 +189,14 @@ class UserPrimaryKeyAPIView(AuthKeyRequiredMixin, View):
     get 요청만 지원
     """    
     def get(self, request: HttpRequest):
-        pass
+        response = HttpResponse(headers={
+            'Content-Type':'text/csv',
+            'Content-Disposition': f'attachment; filename="users.csv"'})
+        
+        file = csv.writer(response)
+        file.writerow(["fullname", "pk"])
+        for user in get_user_model().objects.filter(is_superuser=False).all():
+            file.writerow([user.huami.full_name, user.pk])
+        
+        return response
     
