@@ -89,7 +89,7 @@ class SuperuserRequiredMixin(UserPassesTestMixin):
         return self.request.user.is_superuser
     
 
-class UserInfoView(DetailView, SuperuserRequiredMixin):
+class UserInfoView(SuperuserRequiredMixin, DetailView):
     """유저 정보를 제공하기 위한 클래스 기반 뷰
     """
     model = get_user_model()
@@ -97,7 +97,7 @@ class UserInfoView(DetailView, SuperuserRequiredMixin):
     template_name = 'accounts/userInfo.html'
     
 
-class UserManageView(ListView, SuperuserRequiredMixin):
+class UserManageView(SuperuserRequiredMixin, ListView):
     """유저 정보들을 리스트로 제공하기 위한 클래스 기반 뷰
     """    
     template_name = 'accounts/userManage.html'
@@ -107,7 +107,7 @@ class UserManageView(ListView, SuperuserRequiredMixin):
     paginate_by = 5
 
 
-class UserNoteUpdateView(View, SuperuserRequiredMixin):
+class UserNoteUpdateView(SuperuserRequiredMixin, View):
     """유저에 대한 비고란을 수정하기 위한 클래스 기반 뷰
     post요청만 지원
     """
@@ -118,7 +118,7 @@ class UserNoteUpdateView(View, SuperuserRequiredMixin):
         return redirect(reverse_lazy('accounts:userInfo', kwargs={'pk': pk}))
 
 
-class UserHealthNoteUpdateView(View, SuperuserRequiredMixin):
+class UserHealthNoteUpdateView(SuperuserRequiredMixin, View):
     """유저가 가진 건강 정보의 비고란을 수정하기 위한 클래스 기반 뷰
     post요청만 지원
     """    
@@ -128,7 +128,7 @@ class UserHealthNoteUpdateView(View, SuperuserRequiredMixin):
         health_data.save()
         return redirect(reverse_lazy('accounts:userInfo', kwargs={'pk': health_data.huami_account.user.pk}))
 
-class UserHealthDataSyncView(View, SuperuserRequiredMixin):
+class UserHealthDataSyncView(SuperuserRequiredMixin, View):
     """유저의 데이터 동기화를 위한 클래스 기반 뷰
     get요청만 지원
     """    
@@ -143,7 +143,7 @@ class UserHealthDataSyncView(View, SuperuserRequiredMixin):
         return redirect(reverse_lazy('accounts:userInfo', kwargs={'pk': pk}))
     
 
-class HealthDataCsvDownloadView(View, SuperuserRequiredMixin):
+class HealthDataCsvDownloadView(SuperuserRequiredMixin, View):
     """유저 데이터를 csv로 전달하는 클래스 기반 뷰
     get요청만 지원
     """    
@@ -156,26 +156,38 @@ class HealthDataCsvDownloadView(View, SuperuserRequiredMixin):
         return make_csv_response(user, response)
     
 
-class HealthDataCsvDownloadAPIView(View):
+class AuthKeyRequiredMixin(UserPassesTestMixin):
+    """headers에 auth-key가 존재하는지 여부 확인
+    """    
+    def test_func(self):
+        return self.request.headers.get('auth-key') == settings.AUTH_KEY
+    
+    def handle_no_permission(self):
+        return HttpResponse("You have not permission")
+
+class HealthDataCsvDownloadAPIView(AuthKeyRequiredMixin, View):
     """데이터를 가져올 유저의 pk를 리스트로 받아서 해당하는 유저들의 데이터를 csv파일로 전달하는 API 클래스 기반 뷰
     get 요청만 지원
     """    
     def get(self, request: HttpRequest, pk: int):
-        if request.headers.get('auth-key') != '1234':
-            return HttpResponse({"You have not permission": "and you"})
-        
         if get_user_model().objects.filter(pk=pk).exists() == False:
-            return HttpResponse({"No Person in Users": "hi"})
-        
+            return HttpResponse("No person in users")
         
         user = get_object_or_404(get_user_model(), pk=pk)
         
         if HuamiAccount.objects.filter(user=user).exists() == False:
-            return HttpResponse({"No huami account in user"})
+            return HttpResponse("No huami account in user")
         
         response = HttpResponse(headers={
             'Content-Type':'text/csv',
             'Content-Disposition': f'attachment; filename="{pk}.csv"'})
 
         return make_csv_response(user, response)
+    
+class UserPrimaryKeyAPIView(AuthKeyRequiredMixin, View):
+    """일반유저들의 이름과 대응하는 PK를 전달하는 API 클래스 기반 뷰
+    get 요청만 지원
+    """    
+    def get(self, request: HttpRequest):
+        pass
     
