@@ -11,6 +11,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib import messages
+from huami.models import HuamiAccount
 
 # Create your views here.
 class LoginView(Login):
@@ -187,8 +188,17 @@ class HealthDataCsvDownloadAPIView(View):
     
     def get(self, request: HttpRequest, pk):
         if request.headers.get('auth-key') != '1234':
-            return HttpResponse({"Fuck you": "and you"})
+            return HttpResponse({"You have not permission": "and you"})
+        
+        if get_user_model().objects.filter(pk=pk).exists() == False:
+            return HttpResponse({"No Person in Users": "hi"})
+        
+        
         user = get_object_or_404(get_user_model(), pk=pk)
+        
+        if HuamiAccount.objects.filter(user=user).exists() == False:
+            return HttpResponse({"No huami account in user"})
+        
         response = HttpResponse(headers={
             'Content-Type':'text/csv',
             'Content-Disposition': f'attachment; filename="{pk}.csv"'})
