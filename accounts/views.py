@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.views import LoginView as Login, LogoutView as Logout
 from django.views.generic import View, TemplateView, ListView, DetailView
 from django.urls import reverse_lazy
+from accounts.utils import make_csv_response
 from huami.forms import HuamiAccountCreationForm
 from huami.models.healthdata import HealthData
 from .forms import MyAuthenticationForm
@@ -146,47 +147,20 @@ class HealthDataCsvDownloadView(View, SuperuserRequiredMixin):
     """유저 데이터를 csv로 전달하는 클래스 기반 뷰
     get요청만 지원
     """    
-    def _make_list(self, data):
-        if data == None:
-            return [None for i in range(1440)]
-        return [int(i.strip()) for i in data[1:-1].split(",")]
-    
     def get(self, request, pk):
         user = get_object_or_404(get_user_model(), pk=pk)
         response = HttpResponse(headers={
             'Content-Type':'text/csv',
             'Content-Disposition': f'attachment; filename="{pk}.csv"'})
         
-        writer = csv.writer(response)
-        writer.writerow(['year', 'month', 'day', 'hour', 'minute', 
-                         'age', 'height', 'weight', 'bmi', 
-                         'heart', 'sleep', 'step', 'stress', 'spo2'])
-        for health in user.huami.health.all():
-            heart = self._make_list(health.heart_rate)
-            sleep = self._make_list(health.sleep_quality)
-            steps = self._make_list(health.step_count)
-            stress = self._make_list(health.stress)
-            spo2 = self._make_list(health.spo2)
-            for minute in range(0, 1440):
-                writer.writerow([health.date.year, health.date.month, health.date.day, minute // 60, minute % 60,
-                                health.age, health.height, health.weight, health.bmi,
-                                heart[minute], sleep[minute], steps[minute], stress[minute], spo2[minute]
-                                ])
-        
-        return response
+        return make_csv_response(user, response)
     
 
 class HealthDataCsvDownloadAPIView(View):
     """데이터를 가져올 유저의 pk를 리스트로 받아서 해당하는 유저들의 데이터를 csv파일로 전달하는 API 클래스 기반 뷰
     get 요청만 지원
     """    
-    
-    def _make_list(self, data):
-        if data == None:
-            return [None for i in range(1440)]
-        return [int(i.strip()) for i in data[1:-1].split(",")]
-    
-    def get(self, request: HttpRequest, pk):
+    def get(self, request: HttpRequest, pk: int):
         if request.headers.get('auth-key') != '1234':
             return HttpResponse({"You have not permission": "and you"})
         
@@ -202,19 +176,6 @@ class HealthDataCsvDownloadAPIView(View):
         response = HttpResponse(headers={
             'Content-Type':'text/csv',
             'Content-Disposition': f'attachment; filename="{pk}.csv"'})
-        writer = csv.writer(response)
-        writer.writerow(['year', 'month', 'day', 'hour', 'minute', 
-                    'age', 'height', 'weight', 'bmi', 
-                    'heart', 'sleep', 'step', 'stress', 'spo2'])
-        for health in user.huami.health.all():
-            heart = self._make_list(health.heart_rate)
-            sleep = self._make_list(health.sleep_quality)
-            steps = self._make_list(health.step_count)
-            stress = self._make_list(health.stress)
-            spo2 = self._make_list(health.spo2)
-            for minute in range(0, 1440):
-                writer.writerow([health.date.year, health.date.month, health.date.day, minute // 60, minute % 60,
-                                health.age, health.height, health.weight, health.bmi,
-                                heart[minute], sleep[minute], steps[minute], stress[minute], spo2[minute]
-                                ])
-        return response
+
+        return make_csv_response(user, response)
+    
