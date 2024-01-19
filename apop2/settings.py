@@ -132,3 +132,5 @@ STATICFILES_DIRS = [BASE_DIR / 'apop2']
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_KEY = '1234'
