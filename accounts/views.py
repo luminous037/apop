@@ -194,9 +194,18 @@ class UserPrimaryKeyAPIView(AuthKeyRequiredMixin, View):
             'Content-Disposition': f'attachment; filename="users.csv"'})
         
         file = csv.writer(response)
-        file.writerow(["fullname", "pk"])
+        head_line = []
+        if request.headers.get('fullname') == 'True':
+            head_line.append('fullname')
+        head_line.append('pk')
+        file.writerow(head_line)
+        
         for user in get_user_model().objects.filter(is_superuser=False).all():
-            file.writerow([user.huami.full_name, user.pk])
+            line = []
+            if request.headers.get('fullname') == 'True':
+                line.append(user.huami.full_name)
+            line.append(user.pk)
+            file.writerow(line)
         
         return response
     
