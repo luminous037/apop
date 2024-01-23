@@ -22,26 +22,26 @@ class HealthData(models.Model):
                              blank=False,
                              db_column="heart",
                              db_comment="심박수",
-                             help_text="1분 단위의 하루 심박수를 base64로 인코딩하여 저장")
+                             help_text="1분 단위의 하루 심박수를 문자열로 저장")
     stress = models.TextField(null=True,
                          blank=False,
                          db_column="stress",
                          db_comment="스트레스",
-                         help_text="1분 단위의 하루 스트레스를 base64로 인코딩하여 저장")
+                         help_text="1분 단위의 하루 스트레스를 문자열로 저장")
     spo2 = models.TextField(null=True,
                        blank=False,
                        db_column="spo2",
                        db_comment="혈중 산소포화도",
-                       help_text="1분 단위의 하루 혈중 산소포화도를 base64로 인코딩하여 저장")
+                       help_text="1분 단위의 하루 혈중 산소포화도를 문자열로 저장")
     step_count = models.TextField(null=True,
                              blank=False,
                              db_column="steps",
                              db_comment="걸음 수",
-                             help_text="1분 단위의 하루 걸음수를 base64로 인코딩하여 저장")
+                             help_text="1분 단위의 하루 걸음수를 문자열로 저장")
     sleep_quality = models.TextField(null=True,
                                 blank=False,
                                 db_column="sleep",
-                                db_comment="1분 단위의 수면의 질을 base64로 인코딩하여 저장")
+                                db_comment="1분 단위의 수면의 질을 문자열로 저장")
     weight = models.FloatField(null=True,
                                  blank=False,
                                  db_column="weight",
@@ -57,13 +57,23 @@ class HealthData(models.Model):
                               db_column="age",
                               db_comment="나이",
                               help_text="나이를 입력하세요 (세)")
+    note = models.TextField(null=False,
+                            blank=True,
+                            db_column="note",
+                            db_comment="비고",
+                            help_text="건강상태에 대한 기록을 입력하세요.",
+                            default="[비고]")
     
     @classmethod
+    #Code Smell
     def create_from_sync_data(cls, huami_account: HuamiAccount) -> tuple:
         """Huami서버에서 가져온 데이터를 DB에 저장
 
         Args:
             huami_account (HuamiAccount): Huami 계정
+        
+        Returns:
+            tuple[HealthData]: 동기화된 건강 기록 데이터들
         """        
         def _get_or_create() -> tuple[HealthData, bool]:
             """각 날짜마다 중복되는 작업들의 모임
@@ -102,9 +112,13 @@ class HealthData(models.Model):
             health.save()
             updated_health.append(health)
             
-        return updated_health
+        return set(updated_health)
         
     
     @property
     def bmi(self) -> float:
-        return self.weight / (self.height^2)
+        return self.weight / (self.height*self.height)
+    
+    class Meta:
+        verbose_name = "건강 데이터"
+        verbose_name_plural = "건강 데이터"
