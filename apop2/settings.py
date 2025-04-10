@@ -136,3 +136,57 @@ STATICFILES_DIRS = [BASE_DIR / 'apop2']
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_KEY = '1234'
+
+#pwa settings
+#https://github.com/silviolleite/django-pwa
+PWA_APP_NAME = '중견연구'
+PWA_APP_DESCRIPTION = "중견연구 프로젝트 웹앱 전환중(로컬)"
+PWA_APP_THEME_COLOR = '#0A0302'
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/pwa_images/icon_160.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        'src': '/static/pwa_images/icon_160.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_SPLASH_SCREEN = [
+    {
+        'src': '/static/pwa_images/splash.png',
+        'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
+    }
+]
+PWA_APP_DIR = 'ltr'
+PWA_APP_LANG = 'en-US'
+PWA_APP_SHORTCUTS = [
+    {
+        'name': 'Shortcut',
+        'url': '/target',
+        'description': 'Shortcut to a page in my application',
+        'icons': [
+            {
+                'src': '/static/pwa_images/icon_96.png',
+                'sizes': '96x96',
+                'type': 'image/png'
+            }
+        ]
+    }
+]
+PWA_APP_SCREENSHOTS = [
+    {
+      'src': '/static/pwa_images/screenshot.png',
+      'sizes': '750x1334',
+      "type": "image/png",
+      
+    }
+]
