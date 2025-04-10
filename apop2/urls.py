@@ -24,5 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('survey/', include('survey.urls')),
     path('accounts/', include('accounts.urls')),
+    path('', include('pwa.urls')),
     path('', HomeView.as_view(), name='home'),
 ]
