@@ -10,10 +10,14 @@
 {# Display django.contrib.messages as Bootstrap alerts #}
 {% bootstrap_messages %}
 
+{#load pwa#}
+{% load pwa %} 
+
 {% load static %}
 
 <html lang="ko">
     <head>
+        {%progressive_web_app_meta %}
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>중견연구</title>
