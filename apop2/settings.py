@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'survey',
     'huami',
     'accounts',
+    # pwa
+    'pwa',
 ]
 
 MIDDLEWARE = [
